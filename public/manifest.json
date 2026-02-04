@@ -1,0 +1,27 @@
+{
+  "name": "Enea Nushi - Software Engineer Portfolio",
+  "short_name": "EN Portfolio",
+  "description": "Interactive 3D Portfolio showcasing full-stack development, React, TypeScript, and Three.js projects.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["portfolio", "developer", "software"],
+  "lang": "en-US",
+  "dir": "ltr"
+}

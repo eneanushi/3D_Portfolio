@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!--
+    ═══════════════════════════════════════════════════════════════════════════════
+    INDEX.HTML - Main Entry Point & SEO Configuration
+    ═══════════════════════════════════════════════════════════════════════════════
+    
+    This file contains all the meta tags, Open Graph data, and structured data
+    that search engines and social media platforms use to understand and display
+    your portfolio.
+    
+    ═══════════════════════════════════════════════════════════════════════════════
+    QUICK CUSTOMIZATION CHECKLIST
+    ═══════════════════════════════════════════════════════════════════════════════
+    
+    When cloning this repository, update the following:
+    
+    □ 1. DOMAIN (search & replace "www.eneanushi.space" with your domain)
+    □ 2. NAME (search & replace "Enea Nushi" with your name)
+    □ 3. TITLE (update job title: "Software Engineer", "Web Developer", etc.)
+    □ 4. EMAIL (update contact email)
+    □ 5. DESCRIPTION (write your own 150-160 character description)
+    □ 6. KEYWORDS (update with your skills and specializations)
+    □ 7. SOCIAL LINKS (update LinkedIn, GitHub, etc. in structured data)
+    □ 8. UNIVERSITY (update educational background)
+    □ 9. LOCATION (update geographic region)
+    □ 10. PREVIEW IMAGE (create your own 1200x630 Graph_Image.png)
+    
+    For detailed SEO configuration, see: src/content/seo/README.md
+    
+    ═══════════════════════════════════════════════════════════════════════════════
+    -->
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 1: PRIMARY META TAGS
+         These are the most important tags for SEO
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    PAGE TITLE
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ • Maximum 60 characters (longer titles get truncated in search results)    │
+    │ • Include your name and primary job title                                   │
+    │ • Front-load important keywords                                             │
+    │ • Format: "[Your Name] | [Primary Title] & [Secondary Title]"              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <title>Enea Nushi | Software Engineer & Full Stack Developer</title>
+    <meta name="title" content="Enea Nushi | Software Engineer & Full Stack Developer" />
+    
+    <!--
+    META DESCRIPTION
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ • Maximum 160 characters (longer descriptions get truncated)               │
+    │ • Write compelling, click-worthy copy                                       │
+    │ • Include 1-2 target keywords naturally                                     │
+    │ • This appears in Google search results below your title                   │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <meta name="description" content="Interactive 3D Portfolio showcasing full-stack development, React, TypeScript, and Three.js projects. Computer Science student at UMass Lowell, Massachusetts." />
+    
+    <!--
+    META KEYWORDS
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ • Comma-separated list of relevant keywords                                 │
+    │ • Include job titles, technologies, location, and specializations          │
+    │ • 10-20 keywords is typical                                                 │
+    │ • Note: Less important for modern SEO, but still good to have              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <meta name="keywords" content="Software Engineer, Web Developer, React Developer, Full Stack Developer, HTML CSS JavaScript, 3D Website Portfolio, Interactive Portfolio, Three.js Developer, TypeScript Developer, Frontend Developer, Computer Science Student, UMass Lowell, Massachusetts Developer, Boston Web Developer" />
+    
+    <!--
+    AUTHOR & ROBOTS
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ author: Your full name                                                      │
+    │ robots: "index, follow" = allow search engines to index and follow links   │
+    │ language: Primary content language                                          │
+    │ revisit-after: Suggest crawl frequency (not always respected)              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <meta name="author" content="Enea Nushi" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 2: VIEWPORT & MOBILE CONFIGURATION
+         Controls how the page displays on mobile devices
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    VIEWPORT SETTINGS (usually don't need to change these)
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!--
+    THEME COLOR
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ • Changes the browser's address bar color on mobile                         │
+    │ • #0a0a0a = dark theme (current)                                           │
+    │ • #ffffff = light theme                                                     │
+    │ • Use a color that matches your site's design                              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <meta name="theme-color" content="#0a0a0a" />
+    
+    <!-- PWA (Progressive Web App) settings - enables "Add to Home Screen" -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 3: CANONICAL URL
+         Tells search engines the "official" URL for this page
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    CANONICAL URL
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ ⚠️ IMPORTANT: Update this to your domain!                                   │
+    │                                                                             │
+    │ • Prevents duplicate content issues                                         │
+    │ • Use your preferred domain format (www vs non-www)                        │
+    │ • Always include https://                                                   │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <link rel="canonical" href="https://www.eneanushi.space/" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 4: FAVICON
+         The small icon shown in browser tabs and bookmarks
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    FAVICON FILES
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ To customize:                                                               │
+    │ 1. Create your favicon (recommended: 512x512 PNG)                          │
+    │ 2. Save as: public/favicon/favicon.png                                     │
+    │ 3. The same file works for all sizes (browsers will resize)                │
+    │                                                                             │
+    │ For best results, also create:                                              │
+    │ • 16x16 version for tiny displays                                          │
+    │ • 32x32 version for standard displays                                      │
+    │ • 180x180 version for Apple devices                                        │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 5: OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Discord, Slack)
+         Controls how your link appears when shared on social media
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    OPEN GRAPH TAGS
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ When someone shares your link, these tags control the preview card:        │
+    │                                                                             │
+    │ ┌─────────────────────────────────────────┐                                │
+    │ │  [        PREVIEW IMAGE              ]  │                                │
+    │ │  [        (1200 x 630 px)            ]  │                                │
+    │ │                                         │                                │
+    │ │  Site Name                              │                                │
+    │ │  Page Title                             │                                │
+    │ │  Description text goes here...          │                                │
+    │ └─────────────────────────────────────────┘                                │
+    │                                                                             │
+    │ ⚠️ UPDATE THESE VALUES:                                                     │
+    │ • og:url - Your domain                                                     │
+    │ • og:title - Your name and title                                           │
+    │ • og:description - Your description                                        │
+    │ • og:image - Full URL to your preview image                                │
+    │ • og:site_name - Your site name                                            │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    
+    PREVIEW IMAGE REQUIREMENTS:
+    • Dimensions: 1200 x 630 pixels (1.91:1 aspect ratio)
+    • Format: PNG or JPG
+    • File size: Under 1MB recommended
+    • Location: public/favicon/Graph_Image.png
+    • Must use ABSOLUTE URL (https://yourdomain.com/path/to/image.png)
+    
+    TEST YOUR PREVIEW:
+    • Facebook: https://developers.facebook.com/tools/debug/
+    • LinkedIn: https://www.linkedin.com/post-inspector/
+    • Twitter: https://cards-dev.twitter.com/validator
+    • General: https://www.opengraph.xyz/
+    -->
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.eneanushi.space/" />
+    <meta property="og:title" content="Enea Nushi | Software Engineer & Full Stack Developer" />
+    <meta property="og:description" content="Interactive 3D Portfolio showcasing full-stack development, React, TypeScript, and Three.js projects. Computer Science student at UMass Lowell." />
+    <meta property="og:image" content="https://www.eneanushi.space/favicon/Graph_Image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Enea Nushi - Software Engineer & Web Developer Portfolio" />
+    <meta property="og:site_name" content="Enea Nushi - Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 6: TWITTER CARD
+         Controls how your link appears when shared on Twitter/X
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    TWITTER CARD TAGS
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ twitter:card options:                                                       │
+    │ • "summary" - Small square image                                           │
+    │ • "summary_large_image" - Large rectangular image (recommended)            │
+    │                                                                             │
+    │ If you have a Twitter account, add:                                        │
+    │ <meta name="twitter:site" content="@yourhandle" />                         │
+    │ <meta name="twitter:creator" content="@yourhandle" />                      │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://www.eneanushi.space/" />
+    <meta name="twitter:title" content="Enea Nushi | Software Engineer & Full Stack Developer" />
+    <meta name="twitter:description" content="Interactive 3D Portfolio showcasing full-stack development, React, TypeScript, and Three.js projects. Computer Science student at UMass Lowell." />
+    <meta name="twitter:image" content="https://www.eneanushi.space/favicon/Graph_Image.png" />
+    <meta name="twitter:image:alt" content="Enea Nushi - Software Engineer & Web Developer Portfolio" />
+    <!-- Uncomment and add your Twitter handle if you have one:
+    <meta name="twitter:site" content="@yourhandle" />
+    <meta name="twitter:creator" content="@yourhandle" />
+    -->
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 7: GEOGRAPHIC & DUBLIN CORE METADATA
+         Additional metadata for local SEO and content classification
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    GEOGRAPHIC SEO (for local search results)
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ geo.region: ISO 3166-2 code (US-MA = Massachusetts, US-CA = California)    │
+    │ geo.placename: City or region name                                          │
+    │                                                                             │
+    │ Find your region code: https://en.wikipedia.org/wiki/ISO_3166-2            │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <meta name="geo.region" content="US-MA" />
+    <meta name="geo.placename" content="Massachusetts" />
+    
+    <!--
+    DUBLIN CORE METADATA (additional content classification)
+    -->
+    <meta name="DC.title" content="Enea Nushi - Software Engineer Portfolio" />
+    <meta name="DC.creator" content="Enea Nushi" />
+    <meta name="DC.subject" content="Software Engineering, Web Development, Portfolio" />
+    <meta name="DC.description" content="Interactive 3D Portfolio of Enea Nushi" />
+    <meta name="DC.language" content="en" />
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 8: STRUCTURED DATA (JSON-LD)
+         Rich data that enables enhanced search results (Knowledge Panels, etc.)
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    STRUCTURED DATA OVERVIEW
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ JSON-LD (JavaScript Object Notation for Linked Data) helps search engines  │
+    │ understand your content and can enable rich search results like:           │
+    │                                                                             │
+    │ • Knowledge Panels (info box on right side of Google)                      │
+    │ • Rich Snippets (enhanced search result display)                           │
+    │ • Voice Search responses                                                    │
+    │                                                                             │
+    │ SCHEMAS INCLUDED:                                                           │
+    │ 1. Person - Your professional profile                                      │
+    │ 2. WebSite - Site information                                              │
+    │ 3. BreadcrumbList - Navigation structure                                   │
+    │ 4. ProfilePage - Page type classification                                  │
+    │                                                                             │
+    │ TEST YOUR STRUCTURED DATA:                                                 │
+    │ https://search.google.com/test/rich-results                                │
+    │ https://validator.schema.org/                                              │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    
+    <!--
+    SCHEMA 1: PERSON
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ Your professional profile information                                       │
+    │                                                                             │
+    │ ⚠️ UPDATE THESE FIELDS:                                                     │
+    │ • name - Your full name                                                    │
+    │ • jobTitle - Your current job title                                        │
+    │ • email - Your contact email                                               │
+    │ • url - Your website domain                                                │
+    │ • image - URL to your profile/preview image                                │
+    │ • sameAs - Your social media profile URLs                                  │
+    │ • alumniOf.name - Your university/school                                   │
+    │ • knowsAbout - Your skills and expertise                                   │
+    │ • address - Your location (state/country)                                  │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Enea Nushi",
+      "jobTitle": "Software Engineer",
+      "email": "mailto:nushienea3@gmail.com",
+      "url": "https://www.eneanushi.space",
+      "image": "https://www.eneanushi.space/favicon/Graph_Image.png",
+      "sameAs": [
+        "https://www.linkedin.com/in/enea-nushi/",
+        "https://github.com/eneanushi",
+        "https://www.instagram.com/vision9.dev/",
+        "https://www.eneanushi.com"
+      ],
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "University of Massachusetts Lowell"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Web Development",
+        "React",
+        "TypeScript",
+        "Three.js",
+        "Full Stack Development",
+        "JavaScript",
+        "HTML",
+        "CSS"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Massachusetts",
+        "addressCountry": "US"
+      }
+    }
+    </script>
+    
+    <!--
+    SCHEMA 2: WEBSITE
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ Information about your website as a whole                                   │
+    │                                                                             │
+    │ ⚠️ UPDATE THESE FIELDS:                                                     │
+    │ • name - Your site name                                                    │
+    │ • url - Your domain                                                        │
+    │ • author.name - Your name                                                  │
+    │ • description - Site description                                           │
+    │ • potentialAction.target - Your domain (for search functionality)          │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Enea Nushi - Portfolio",
+      "url": "https://www.eneanushi.space",
+      "author": {
+        "@type": "Person",
+        "name": "Enea Nushi"
+      },
+      "description": "Interactive 3D Portfolio showcasing full-stack development, React, TypeScript, and Three.js projects.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.eneanushi.space/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!--
+    SCHEMA 3: BREADCRUMB LIST
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ Navigation structure of your site (helps with site links in search)        │
+    │                                                                             │
+    │ ⚠️ UPDATE:                                                                  │
+    │ • All "item" URLs to your domain                                           │
+    │ • Add/remove pages as needed                                               │
+    │ • Keep "position" numbers sequential                                        │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.eneanushi.space/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "About",
+          "item": "https://www.eneanushi.space/about"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Arena",
+          "item": "https://www.eneanushi.space/arena"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Resume",
+          "item": "https://www.eneanushi.space/resume"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Contact",
+          "item": "https://www.eneanushi.space/contact"
+        }
+      ]
+    }
+    </script>
+    
+    <!--
+    SCHEMA 4: PROFILE PAGE
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ Identifies this as a profile/portfolio page type                           │
+    │                                                                             │
+    │ ⚠️ UPDATE:                                                                  │
+    │ • mainEntity.name - Your full name                                         │
+    │ • mainEntity.alternateName - Your initials or nickname                     │
+    │ • mainEntity.description - Brief professional description                  │
+    │ • mainEntity.image - URL to your image                                     │
+    └─────────────────────────────────────────────────────────────────────────────┘
+    -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Enea Nushi",
+        "alternateName": "EN",
+        "description": "Software Engineer & Creative Developer specializing in React, TypeScript, and Three.js",
+        "image": "https://www.eneanushi.space/favicon/Graph_Image.png"
+      }
+    }
+    </script>
+    
+    
+    
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION 9: PERFORMANCE OPTIMIZATION
+         Preconnect and prefetch for faster loading
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!--
+    PRECONNECT
+    Establishes early connections to external domains for faster resource loading
+    Add preconnect for any external services your site uses (fonts, CDNs, APIs)
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!--
+    DNS PREFETCH
+    Resolves DNS for external domains you link to (social profiles, etc.)
+    Add dns-prefetch for domains you frequently link to
+    -->
+    <link rel="dns-prefetch" href="https://www.linkedin.com" />
+    <link rel="dns-prefetch" href="https://github.com" />
+    
+  </head>
+  
+  
+  
+  <!-- ═══════════════════════════════════════════════════════════════════════════════
+       BODY
+       The main content is rendered by React into the #root div
+       ═══════════════════════════════════════════════════════════════════════════════ -->
+  <body>
+    <!-- React app mounts here - don't modify this -->
+    <div id="root"></div>
+    
+    <!-- Main application entry point -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

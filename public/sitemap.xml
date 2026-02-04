@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+XML SITEMAP - Search Engine Page Index
+═══════════════════════════════════════════════════════════════════════════════
+
+This file helps search engines discover and index your pages.
+
+═══════════════════════════════════════════════════════════════════════════════
+CUSTOMIZATION INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. UPDATE THE DOMAIN
+   Replace "www.eneanushi.space" with your domain in all <loc> tags
+
+2. UPDATE DATES
+   Change <lastmod> dates when you update page content
+   Format: YYYY-MM-DD
+
+3. ADD NEW PAGES
+   Copy a <url> block and update:
+   - <loc>: Full URL to the page
+   - <lastmod>: Last modification date
+   - <changefreq>: How often the page changes
+   - <priority>: Page importance (0.0 to 1.0)
+
+CHANGEFREQ OPTIONS:
+- always    : Page changes every time it's accessed
+- hourly    : Page changes every hour
+- daily     : Page changes every day
+- weekly    : Page changes every week
+- monthly   : Page changes every month
+- yearly    : Page changes every year
+- never     : Archived page that won't change
+
+PRIORITY GUIDELINES:
+- 1.0: Homepage (most important)
+- 0.9: Key pages (resume, projects)
+- 0.8: Secondary pages (about, contact)
+- 0.7: Supporting pages
+- 0.5: Default priority
+
+═══════════════════════════════════════════════════════════════════════════════
+VALIDATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Test your sitemap at:
+- https://www.xml-sitemaps.com/validate-xml-sitemap.html
+- Google Search Console (after deployment)
+
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  HOME PAGE
+  Main landing page - highest priority
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  <url>
+    <loc>https://www.eneanushi.space/</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  ABOUT PAGE
+  Personal background and story
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  <url>
+    <loc>https://www.eneanushi.space/about</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  ARENA / PROJECTS PAGE
+  Interactive 3D project showcase - high priority for portfolio visibility
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  <url>
+    <loc>https://www.eneanushi.space/arena</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  RESUME PAGE
+  Professional experience and qualifications - high priority for job seekers
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  <url>
+    <loc>https://www.eneanushi.space/resume</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  CONTACT PAGE
+  Contact information and availability
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  <url>
+    <loc>https://www.eneanushi.space/contact</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  ADD NEW PAGES BELOW
+  Copy this template and customize:
+  
+  <url>
+    <loc>https://www.eneanushi.space/newpage</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  ═══════════════════════════════════════════════════════════════════════════
+  -->
+  
+</urlset>

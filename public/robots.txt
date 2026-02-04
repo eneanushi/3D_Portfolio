@@ -1,0 +1,96 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# ROBOTS.TXT - Search Engine Crawler Configuration
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# This file tells search engine crawlers which pages they can/cannot access.
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# CUSTOMIZATION INSTRUCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# 1. UPDATE THE DOMAIN
+#    Change "www.eneanushi.space" to your domain in:
+#    - Sitemap URL (line below)
+#    - Host directive (at bottom)
+#
+# 2. ADD/REMOVE PATHS
+#    - "Allow:" lets crawlers access a path
+#    - "Disallow:" blocks crawlers from a path
+#
+# 3. SITEMAP LOCATION
+#    Make sure your sitemap.xml exists at the URL specified below
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Allow all crawlers
+User-agent: *
+
+# Allow crawling of all public content
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SITEMAP LOCATION
+# ⚠️ Update this URL when you deploy to a new domain
+# ─────────────────────────────────────────────────────────────────────────────
+Sitemap: https://www.eneanushi.space/sitemap.xml
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CRAWL RATE (optional)
+# Limits how fast crawlers request pages (in seconds between requests)
+# Remove if you want faster crawling
+# ─────────────────────────────────────────────────────────────────────────────
+Crawl-delay: 1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BLOCKED PATHS
+# Add paths you don't want search engines to index
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Block API routes (if any)
+Disallow: /api/
+
+# Block raw JSON files
+Disallow: /*.json$
+
+# Block source code directory (Vite serves from here in dev)
+Disallow: /src/
+
+# Block hidden files
+Disallow: /.*
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ALLOWED ASSET PATHS
+# Explicitly allow crawlers to index your assets
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Favicon and Open Graph images
+Allow: /favicon/
+
+# Texture and image assets
+Allow: /textures/
+
+# 3D model assets (for SEO purposes, though not directly indexable)
+Allow: /models/
+
+# Document files (like PDF resume)
+Allow: /documents/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HOST DIRECTIVE
+# ⚠️ Update this URL when you deploy to a new domain
+# Tells crawlers the preferred domain (www vs non-www)
+# ─────────────────────────────────────────────────────────────────────────────
+Host: https://www.eneanushi.space
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NOTES
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# - This file is automatically served by your web server
+# - Changes take effect immediately (no build required)
+# - Test at: https://www.google.com/webmasters/tools/robots-testing-tool
+# - Learn more: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+#
+# ═══════════════════════════════════════════════════════════════════════════════
