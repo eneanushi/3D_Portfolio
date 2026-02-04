@@ -118,6 +118,7 @@ To transform this portfolio with your own information, update the following conf
 | `src/content/seo/structured-data.ts` | JSON-LD schemas for rich search results |
 | `src/content/seo/social-media.ts` | Open Graph and Twitter Card settings |
 
+> 📚 For detailed SEO customization instructions, see [`src/content/seo/README.md`](src/content/seo/README.md)
 
 ### HTML & Domain Configuration
 
@@ -193,7 +194,6 @@ When personalizing this portfolio, replace these files with your own:
 | A | Strafe left |
 | D | Strafe right |
 | Shift | Hold to run |
-| I | Dance animation |
 | H | Toggle controls panel |
 | E | Interact with station |
 | ESC | Close UI panels |
@@ -293,17 +293,18 @@ This portfolio includes comprehensive SEO optimization:
 
 ## 📄 License
 
-This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International** (CC BY-NC 4.0).
+This project is licensed under the **MIT License**.
 
-See the [LICENSE](LICENSE) file for full details.
+See the [LICENSE](LICENSE) file for the full license text:
 
-**You are free to:**
-- Share — copy and redistribute the material
-- Adapt — remix, transform, and build upon the material
-
-**Under these conditions:**
-- Attribution — Give appropriate credit
-- NonCommercial — Not for commercial purposes
+> MIT-License  
+> Copyright \<2026\> \<Enea Nushi\>  
+>  
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  
+>  
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  
+>  
+> THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
