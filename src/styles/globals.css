@@ -379,3 +379,427 @@ button {
     padding-right: env(safe-area-inset-right);
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ARENA — shared surfaces for the 3D experience
+   The arena UI is deliberately quiet: dark glass, hairline borders, one warm
+   accent. Hover and focus states live here so they can use real CSS states.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --arena-glass: rgba(16, 17, 20, 0.72);
+  --arena-glass-raised: rgba(255, 255, 255, 0.035);
+  --arena-hairline: rgba(255, 255, 255, 0.08);
+  --arena-hairline-strong: rgba(255, 255, 255, 0.16);
+  --arena-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 3D zone labels (rendered into the canvas via drei Html) ──────────────── */
+
+.zone-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 16px;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  background: rgba(10, 11, 13, 0.55);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--arena-hairline);
+}
+
+.zone-label__index {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--color-accent);
+}
+
+.zone-label__name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ── Zone panel ───────────────────────────────────────────────────────────── */
+
+.zone-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(22, 23, 27, 0.86) 0%,
+    rgba(12, 13, 15, 0.92) 100%
+  );
+  backdrop-filter: blur(32px) saturate(150%);
+  -webkit-backdrop-filter: blur(32px) saturate(150%);
+  border: 1px solid var(--arena-hairline);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.zone-panel__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.zone-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.zone-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+  line-height: 1.05;
+}
+
+/* ── Icon button (close) ──────────────────────────────────────────────────── */
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--arena-glass-raised);
+  border: 1px solid var(--arena-hairline);
+  color: rgba(255, 255, 255, 0.55);
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.icon-button:hover {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--arena-hairline-strong);
+}
+
+/* ── Experience entries ───────────────────────────────────────────────────── */
+
+.exp-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.exp-item:last-child {
+  border-bottom: none;
+}
+
+.exp-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 4px;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.exp-head:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.exp-head:hover .exp-role {
+  color: #ffffff;
+}
+
+.exp-role {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.005em;
+  transition: color var(--transition-fast);
+}
+
+.exp-company {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-accent);
+  margin-top: 3px;
+}
+
+.exp-meta {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.38);
+  margin-top: 6px;
+}
+
+.exp-chevron {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.35);
+  transition: transform var(--transition-normal), color var(--transition-fast);
+}
+
+.exp-head:hover .exp-chevron {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.exp-chevron--open {
+  transform: rotate(180deg);
+}
+
+.exp-point {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.exp-point::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 4px;
+  height: 1px;
+  background: rgba(201, 169, 98, 0.65);
+}
+
+.tag {
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.badge-current {
+  padding: 3px 9px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border: 1px solid rgba(201, 169, 98, 0.22);
+  border-radius: var(--radius-full);
+}
+
+/* ── Primary call to action ───────────────────────────────────────────────── */
+
+.cta-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  padding: 20px 24px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(
+    135deg,
+    rgba(201, 169, 98, 0.14) 0%,
+    rgba(201, 169, 98, 0.04) 55%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(201, 169, 98, 0.24);
+  transition: border-color var(--transition-normal), transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.cta-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 700ms var(--arena-ease);
+}
+
+.cta-primary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 169, 98, 0.5);
+  box-shadow: 0 18px 40px -18px rgba(201, 169, 98, 0.35);
+}
+
+.cta-primary:hover::after {
+  transform: translateX(100%);
+}
+
+.cta-primary__arrow {
+  transition: transform var(--transition-normal);
+}
+
+.cta-primary:hover .cta-primary__arrow {
+  transform: translateX(4px);
+}
+
+/* ── Contact tiles ────────────────────────────────────────────────────────── */
+
+.contact-tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  background: var(--arena-glass-raised);
+  border: 1px solid var(--arena-hairline);
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.contact-tile:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--arena-hairline-strong);
+  transform: translateY(-2px);
+}
+
+.contact-tile__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.75);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.contact-tile:hover .contact-tile__icon {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.contact-tile__label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.contact-tile__value {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Interaction prompt ───────────────────────────────────────────────────── */
+
+.zone-prompt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 10px 10px 18px;
+  border-radius: var(--radius-full);
+  background: rgba(12, 13, 16, 0.7);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--arena-hairline);
+  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.8);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.zone-prompt:hover {
+  border-color: var(--arena-hairline-strong);
+  background: rgba(18, 19, 23, 0.8);
+}
+
+.zone-prompt:hover .zone-prompt__key {
+  background: rgba(201, 169, 98, 0.18);
+  border-color: rgba(201, 169, 98, 0.4);
+  color: var(--color-accent);
+}
+
+.zone-prompt__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--arena-hairline);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all var(--transition-fast);
+}
+
+/* ── Zone compass (header right) ──────────────────────────────────────────── */
+
+.zone-compass {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(12, 13, 16, 0.6);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--arena-hairline);
+}
+
+.zone-compass__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.42);
+  transition: color var(--transition-normal), background var(--transition-normal);
+}
+
+.zone-compass__item--active {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.zone-compass__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.zone-compass__item--active .zone-compass__dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 8px rgba(201, 169, 98, 0.6);
+}
+
+@media (max-width: 1100px) {
+  .zone-compass__item span:last-child {
+    display: none;
+  }
+  .zone-compass__item {
+    padding: 6px 8px;
+  }
+}

@@ -625,6 +625,8 @@ export const ResumePage = () => {
                               letterSpacing: '0.5px',
                             }}>
                               {job.period}
+                              <span style={{ opacity: 0.5, padding: '0 6px' }}>·</span>
+                              {job.location}
                             </p>
                           </div>
                           <ul style={{
@@ -764,8 +766,8 @@ export const ResumePage = () => {
                             key={skill}
                             style={{
                               padding: '6px 12px',
-                              background: 'rgba(59, 130, 246, 0.08)',
-                              border: '1px solid rgba(59, 130, 246, 0.15)',
+                              background: 'rgba(201, 169, 98, 0.08)',
+                              border: '1px solid rgba(201, 169, 98, 0.18)',
                               borderRadius: '5px',
                               fontSize: '11px',
                               fontWeight: 500,
@@ -900,7 +902,7 @@ export const ResumePage = () => {
                               width: '4px',
                               height: '4px',
                               borderRadius: '50%',
-                              background: 'rgba(59, 130, 246, 0.5)',
+                              background: 'rgba(201, 169, 98, 0.5)',
                             }} />
                             {cert}
                           </li>

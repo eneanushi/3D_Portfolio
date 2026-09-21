@@ -130,6 +130,7 @@ export {
 export { 
   arenaContent, 
   stationContents,
+  getStationContent,
   keyboardControls,
   controlsPanelContent,
   type ArenaContent,
@@ -137,17 +138,14 @@ export {
   type ControlMapping,
 } from './arena';
 
-// Station data (work experience, projects, contact)
+// Station data (work experience, projects showcase, contact)
 export {
   workExperienceData,
-  projectsData,
+  projectsShowcase,
   contactInfoData,
   getWorkExperienceById,
-  getProjectById,
-  getProjectsWithLinks,
-  getAllProjectTechnologies,
   getAllWorkTechnologies,
   type WorkExperience,
-  type Project,
+  type ProjectsShowcase,
   type ContactInfo,
 } from './stations';

@@ -12,7 +12,7 @@ An innovative portfolio website featuring a fully navigable 3D environment where
 
 **Key Highlights:**
 - 🎮 Walk around a 3D arena as an animated character
-- 🏢 Interactive stations displaying work experience, projects, and contact info
+- 🏢 Interactive zones for work experience, selected work, and contact
 - 📱 Fully responsive with mobile touch controls
 - 🔍 SEO-optimized with structured data and social media previews
 - ⚡ Fast performance with Vite build system
@@ -104,8 +104,8 @@ To transform this portfolio with your own information, update the following conf
 |------|---------|
 | `src/content/config.ts` | Global identity (name, initials, email, social links, copyright) |
 | `src/content/home.ts` | Home page content and taglines |
-| `src/content/stations.ts` | Work experience, projects, and contact data for arena |
-| `src/content/resume.ts` | Resume page content (experience, education, skills) |
+| `src/content/stations.ts` | Work experience (shared with the Resume page), projects call-to-action, and contact data |
+| `src/content/resume.ts` | Resume page content (education, skills, awards; English experience is derived from `stations.ts`) |
 | `src/content/contact.ts` | Contact page content and links |
 | `src/content/arena.ts` | Arena UI text and keyboard controls |
 
@@ -191,12 +191,12 @@ When personalizing this portfolio, replace these files with your own:
 |-----|--------|
 | W | Walk forward |
 | S | Walk backward |
-| A | Strafe left |
-| D | Strafe right |
+| A | Turn left |
+| D | Turn right |
 | Shift | Hold to run |
 | H | Toggle controls panel |
-| E | Interact with station |
-| ESC | Close UI panels |
+| E | Open / close the zone panel |
+| ESC | Close the zone panel |
 
 > **Note**: On mobile devices, use the on-screen joystick and buttons for navigation.
 
@@ -219,7 +219,7 @@ When personalizing this portfolio, replace these files with your own:
 │   ├── components/
 │   │   ├── camera/          # Third-person camera system
 │   │   ├── character/       # Character model and controller
-│   │   ├── environment/     # Arena, stations, lighting
+│   │   ├── environment/     # Arena shell, zones, lighting, atmosphere
 │   │   ├── scene/           # 3D scene components
 │   │   └── ui/              # UI overlays and pages
 │   │
@@ -227,7 +227,7 @@ When personalizing this portfolio, replace these files with your own:
 │   │   ├── seo/             # SEO configuration
 │   │   ├── config.ts        # Global settings
 │   │   ├── home.ts          # Home page content
-│   │   ├── stations.ts      # Work/Projects/Contact data
+│   │   ├── stations.ts      # Work experience, projects CTA, contact
 │   │   ├── resume.ts        # Resume content
 │   │   ├── contact.ts       # Contact page content
 │   │   └── arena.ts         # Arena UI content

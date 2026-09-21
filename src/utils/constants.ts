@@ -7,21 +7,33 @@ export const ROTATION_SPEED = 3;
 export const ARENA_BOUND_X = 48;
 export const ARENA_BOUND_Z = 48;
 
-// Station positions
+// Arena dimensions
+export const ARENA_SIZE = 100;
+export const WALL_HEIGHT = 8;
+
+// Zone positions
 export const STATIONS = {
   work: { x: -25, y: 0, z: 0 },
   projects: { x: 0, y: 0, z: -25 },
   contact: { x: 25, y: 0, z: 0 },
 } as const;
 
-// Station interaction radius
+// Zone interaction radius
 export const STATION_RADIUS = 6;
+
+// Soft collision radius around each zone monolith
+export const MONOLITH_BLOCK_RADIUS = 1.5;
 
 // Camera settings
 export const CAMERA_OFFSET = {
-  distance: 5,      // Distance behind character
-  height: 2.8,      // Height above character
-  lookAheadDistance: 1.2, // How far ahead of character to look
+  distance: 6.2,          // Distance behind character
+  height: 2.9,            // Height above character
+  lookAheadDistance: 1.6, // How far ahead of character to look
+  lookAtHeight: 1.45,     // Height of the point the camera frames
+  fov: 52,                // Base field of view
+  fovRun: 56,             // Slightly wider while sprinting, as a speed cue
+  damping: 6.5,           // Higher = snappier follow
+  lateralOnOpen: 1.9,     // Pan across when a docked panel opens
 };
 
 // Animation settings
@@ -31,13 +43,16 @@ export const ANIMATION_CROSSFADE_DURATION = 0.2;
 export const SPAWN_POSITION: [number, number, number] = [0, 0, 0];
 export const SPAWN_ROTATION = 0; // Facing +Z direction initially
 
-// Colors
+// Palette — restrained neutrals shared between the 3D scene and the UI
 export const COLORS = {
-  bgPrimary: '#0a0a0a',
-  bgSecondary: '#111111',
-  bgTertiary: '#1a1a1a',
+  bgPrimary: '#000000',
+  bgSecondary: '#0a0a0a',
+  bgTertiary: '#111111',
   textPrimary: '#ffffff',
   textSecondary: 'rgba(255, 255, 255, 0.6)',
-  accent: '#3b82f6',
-  ground: '#0f0f12',
+  accent: '#c9a962',
+  atmosphere: '#0c0d10',
+  ground: '#26282e',
+  stone: '#17181c',
+  stoneLight: '#212329',
 } as const;

@@ -481,6 +481,171 @@
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!--
+    FONTS
+    Loaded here rather than only through the CSS bundle, so the boot screen and
+    first paint already have the right typefaces. `media="print"` keeps the
+    request off the critical path; the onload handler promotes it once fetched.
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      />
+    </noscript>
+
+    <!--
+    BOOT SCREEN STYLES
+    Inline on purpose: this is the only thing on screen while the application
+    bundle downloads, so it cannot depend on any external stylesheet. It is
+    designed to match the in-app loader exactly, which makes the hand-off
+    between the two invisible.
+    -->
+    <style>
+      html, body { margin: 0; padding: 0; background: #000000; }
+
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        opacity: 1;
+        transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      #boot.boot--done {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* A barely-there warm pool of light behind the mark, for depth */
+      #boot::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 50% 40% at 50% 46%,
+          rgba(201, 169, 98, 0.055),
+          transparent 70%
+        );
+      }
+
+      #boot::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.022;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      .boot__mark {
+        position: relative;
+        font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+        font-weight: 300;
+        font-size: 54px;
+        line-height: 1;
+        letter-spacing: 0.2em;
+        text-indent: 0.2em; /* offsets the trailing letter-space, so it optically centres */
+        color: rgba(255, 255, 255, 0.92);
+        animation: bootMarkIn 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      .boot__rail {
+        position: relative;
+        width: 148px;
+        height: 1px;
+        margin-top: 30px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.09);
+        animation: bootFadeIn 700ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+      }
+
+      /* Indeterminate: nothing is measurable yet, so the rail shuttles rather
+         than pretending to know a percentage. */
+      .boot__bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 38%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.85),
+          transparent
+        );
+        animation: bootShuttle 1600ms cubic-bezier(0.55, 0, 0.45, 1) infinite;
+      }
+
+      .boot__meta {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 148px;
+        margin-top: 15px;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.3);
+        animation: bootFadeIn 700ms cubic-bezier(0.22, 1, 0.36, 1) 260ms both;
+      }
+
+      .boot__dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(201, 169, 98, 0.9);
+        animation: bootPulse 1800ms ease-in-out infinite;
+      }
+
+      @keyframes bootMarkIn {
+        from { opacity: 0; transform: translateY(8px); filter: blur(6px); }
+        to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+      }
+
+      @keyframes bootFadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes bootShuttle {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(363%); }
+      }
+
+      @keyframes bootPulse {
+        0%, 100% { opacity: 0.35; }
+        50%      { opacity: 1; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .boot__mark,
+        .boot__rail,
+        .boot__meta { animation: none; }
+        .boot__bar { animation-duration: 3200ms; }
+        .boot__dot { animation: none; opacity: 0.8; }
+      }
+    </style>
     
     <!--
     DNS PREFETCH
@@ -499,6 +664,26 @@
        The main content is rendered by React into the #root div
        ═══════════════════════════════════════════════════════════════════════════════ -->
   <body>
+    <!--
+    BOOT SCREEN
+    Painted immediately, before the application bundle has even downloaded.
+    src/main.tsx dismisses it once React has mounted.
+    -->
+    <div id="boot">
+      <div class="boot__mark">EN</div>
+      <div class="boot__rail"><div class="boot__bar"></div></div>
+      <div class="boot__meta">
+        <span>Enea Nushi</span>
+        <span class="boot__dot"></span>
+      </div>
+    </div>
+
+    <noscript>
+      <div style="position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:#000;color:rgba(255,255,255,0.7);font-family:Georgia,serif;font-size:15px;text-align:center;padding:24px;">
+        This portfolio is an interactive 3D experience and needs JavaScript enabled.
+      </div>
+    </noscript>
+
     <!-- React app mounts here - don't modify this -->
     <div id="root"></div>
     

@@ -5,72 +5,94 @@ import * as THREE from 'three';
 import { useGameStore } from '../../stores/gameStore';
 import { CAMERA_OFFSET } from '../../utils/constants';
 
+const targetPosition = new THREE.Vector3();
+const targetLookAt = new THREE.Vector3();
+const characterVector = new THREE.Vector3();
+
+/**
+ * Third-person follow camera.
+ *
+ * Damped rather than lerped so the framing stays consistent at any frame rate,
+ * with two small cinematic touches: the field of view widens a little while
+ * sprinting, and the camera settles back and up when a zone panel is open so
+ * the character reads as part of the composition behind it.
+ */
 export const CameraRig = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-  const characterPosition = useGameStore((state) => state.characterPosition);
-  const characterRotation = useGameStore((state) => state.characterRotation);
 
-  // Smoothed values
-  const smoothedPosition = useRef(new THREE.Vector3(0, CAMERA_OFFSET.height, CAMERA_OFFSET.distance));
-  const smoothedLookAt = useRef(new THREE.Vector3(0, 1.5, 0));
+  const smoothedPosition = useRef(
+    new THREE.Vector3(0, CAMERA_OFFSET.height, CAMERA_OFFSET.distance)
+  );
+  const smoothedLookAt = useRef(new THREE.Vector3(0, CAMERA_OFFSET.lookAtHeight, 0));
 
-  useFrame((_, delta) => {
-    if (!cameraRef.current) return;
+  useFrame((state, delta) => {
+    const camera = cameraRef.current;
+    if (!camera) return;
 
-    // Character position as Vector3
-    const charPos = new THREE.Vector3(
-      characterPosition[0],
-      characterPosition[1],
-      characterPosition[2]
+    const { characterPosition, characterRotation, currentAnimation, isUIOpen } =
+      useGameStore.getState();
+
+    characterVector.set(characterPosition[0], characterPosition[1], characterPosition[2]);
+
+    const sin = Math.sin(characterRotation);
+    const cos = Math.cos(characterRotation);
+
+    // Pull back and lift slightly while a panel is open
+    const distance = CAMERA_OFFSET.distance * (isUIOpen ? 1.14 : 1);
+    const height = CAMERA_OFFSET.height * (isUIOpen ? 1.12 : 1);
+
+    // On wide screens the panel docks to the right, so pan the framing across
+    // to keep the character clear of it rather than hidden behind it.
+    const isWide = state.size.width > 768;
+    const lateral = isUIOpen && isWide ? CAMERA_OFFSET.lateralOnOpen : 0;
+    const rightX = cos * lateral;
+    const rightZ = -sin * lateral;
+
+    targetPosition.set(
+      characterVector.x - sin * distance + rightX,
+      characterVector.y + height,
+      characterVector.z - cos * distance + rightZ
     );
 
-    // Camera should be BEHIND the character
-    // Character faces direction based on rotation (sin for X, cos for Z)
-    // Camera should be opposite to that direction
-    const cameraOffset = new THREE.Vector3(
-      -Math.sin(characterRotation) * CAMERA_OFFSET.distance,
-      CAMERA_OFFSET.height,
-      -Math.cos(characterRotation) * CAMERA_OFFSET.distance
+    targetLookAt.set(
+      characterVector.x + sin * CAMERA_OFFSET.lookAheadDistance + rightX,
+      characterVector.y + CAMERA_OFFSET.lookAtHeight,
+      characterVector.z + cos * CAMERA_OFFSET.lookAheadDistance + rightZ
     );
 
-    // Target camera position = character position + offset behind
-    const targetCameraPos = charPos.clone().add(cameraOffset);
+    // Frame-rate independent damping
+    const lambda = CAMERA_OFFSET.damping;
+    smoothedPosition.current.x = THREE.MathUtils.damp(smoothedPosition.current.x, targetPosition.x, lambda, delta);
+    smoothedPosition.current.y = THREE.MathUtils.damp(smoothedPosition.current.y, targetPosition.y, lambda, delta);
+    smoothedPosition.current.z = THREE.MathUtils.damp(smoothedPosition.current.z, targetPosition.z, lambda, delta);
 
-    // Look at point is slightly above character and ahead of them
-    const lookAheadOffset = new THREE.Vector3(
-      Math.sin(characterRotation) * CAMERA_OFFSET.lookAheadDistance,
-      1.5, // Look at character's chest/head height
-      Math.cos(characterRotation) * CAMERA_OFFSET.lookAheadDistance
-    );
-    const targetLookAt = charPos.clone().add(lookAheadOffset);
+    smoothedLookAt.current.x = THREE.MathUtils.damp(smoothedLookAt.current.x, targetLookAt.x, lambda, delta);
+    smoothedLookAt.current.y = THREE.MathUtils.damp(smoothedLookAt.current.y, targetLookAt.y, lambda, delta);
+    smoothedLookAt.current.z = THREE.MathUtils.damp(smoothedLookAt.current.z, targetLookAt.z, lambda, delta);
 
-    // Smooth camera movement (lerp factor based on delta time)
-    const lerpSpeed = 8;
-    const lerpFactor = 1 - Math.exp(-lerpSpeed * delta);
+    camera.position.copy(smoothedPosition.current);
 
-    smoothedPosition.current.lerp(targetCameraPos, lerpFactor);
-    smoothedLookAt.current.lerp(targetLookAt, lerpFactor);
+    // Barely perceptible handheld drift, so a standing character is not static
+    const t = state.clock.elapsedTime;
+    camera.position.y += Math.sin(t * 0.5) * 0.015;
 
-    // Apply to camera
-    cameraRef.current.position.copy(smoothedPosition.current);
-    cameraRef.current.lookAt(smoothedLookAt.current);
+    camera.lookAt(smoothedLookAt.current);
+
+    const targetFov = currentAnimation === 'Running' ? CAMERA_OFFSET.fovRun : CAMERA_OFFSET.fov;
+    if (Math.abs(camera.fov - targetFov) > 0.01) {
+      camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 3, delta);
+      camera.updateProjectionMatrix();
+    }
   });
-
-  // Initial position
-  const initialPos: [number, number, number] = [
-    0,
-    CAMERA_OFFSET.height,
-    CAMERA_OFFSET.distance
-  ];
 
   return (
     <PerspectiveCamera
       ref={cameraRef}
       makeDefault
-      fov={60}
+      fov={CAMERA_OFFSET.fov}
       near={0.1}
-      far={1000}
-      position={initialPos}
+      far={400}
+      position={[0, CAMERA_OFFSET.height, CAMERA_OFFSET.distance]}
     />
   );
 };

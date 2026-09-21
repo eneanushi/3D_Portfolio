@@ -1,46 +1,92 @@
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useGameStore } from '../../stores/gameStore';
+import { STATIONS, ARENA_SIZE } from '../../utils/constants';
+
+/**
+ * Restrained three-point lighting plus a soft follow light on the character.
+ * No coloured stage lights: the arena should read as an architectural space.
+ */
 export const Lighting = () => {
+  const followRef = useRef<THREE.SpotLight>(null);
+  const followTarget = useRef<THREE.Object3D>(null);
+
+  useFrame(() => {
+    const { characterPosition } = useGameStore.getState();
+
+    if (followRef.current && followTarget.current) {
+      // A spotlight aims at its target object, which must live in the scene
+      if (followRef.current.target !== followTarget.current) {
+        followRef.current.target = followTarget.current;
+      }
+
+      followRef.current.position.set(
+        characterPosition[0] + 2.5,
+        9,
+        characterPosition[2] + 3.5
+      );
+      followTarget.current.position.set(
+        characterPosition[0],
+        0,
+        characterPosition[2]
+      );
+      followTarget.current.updateMatrixWorld();
+    }
+  });
+
   return (
     <>
-      {/* Ambient Light - slightly reduced */}
-      <ambientLight intensity={1.1} color="#ffffff" />
+      {/* Base fill so nothing ever goes fully black */}
+      <ambientLight intensity={0.5} color="#c8ccd6" />
+      <hemisphereLight args={['#aab2c4', '#0d0e11', 0.55]} />
 
-      {/* Key Light - Main directional */}
+      {/* Key light — the only shadow caster */}
       <directionalLight
-        position={[15, 25, 15]}
-        intensity={1.5}
-        color="#ffffff"
+        position={[22, 30, 16]}
+        intensity={1.9}
+        color="#fff4e2"
         castShadow
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-near={0.5}
-        shadow-camera-far={100}
-        shadow-camera-left={-50}
-        shadow-camera-right={50}
-        shadow-camera-top={50}
-        shadow-camera-bottom={-50}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+        shadow-camera-near={1}
+        shadow-camera-far={120}
+        shadow-camera-left={-ARENA_SIZE / 2}
+        shadow-camera-right={ARENA_SIZE / 2}
+        shadow-camera-top={ARENA_SIZE / 2}
+        shadow-camera-bottom={-ARENA_SIZE / 2}
       />
 
-      {/* Fill Light */}
-      <directionalLight
-        position={[-15, 15, -15]}
-        intensity={0.6}
-        color="#ffffff"
+      {/* Cool fill from the opposite side */}
+      <directionalLight position={[-18, 12, -14]} intensity={0.35} color="#9fb0cc" />
+
+      {/* Rim light to separate silhouettes from the far wall */}
+      <directionalLight position={[0, 9, -26]} intensity={0.45} color="#dfe6f2" />
+
+      {/* Soft follow light keeps the character readable anywhere in the arena */}
+      <spotLight
+        ref={followRef}
+        intensity={26}
+        angle={0.55}
+        penumbra={1}
+        distance={26}
+        decay={1.6}
+        color="#fff6ea"
       />
+      <object3D ref={followTarget} />
 
-      {/* Back Light */}
-      <directionalLight
-        position={[0, 10, -20]}
-        intensity={0.4}
-        color="#ffffff"
-      />
-
-      {/* Hemisphere */}
-      <hemisphereLight args={['#ffffff', '#444466', 0.6]} />
-
-      {/* Station point lights */}
-      <pointLight position={[-25, 5, 0]} intensity={1.5} color="#ffffff" distance={25} />
-      <pointLight position={[0, 5, -25]} intensity={1.5} color="#ffffff" distance={25} />
-      <pointLight position={[25, 5, 0]} intensity={1.5} color="#ffffff" distance={25} />
-      <pointLight position={[0, 5, 15]} intensity={1.5} color="#ffffff" distance={25} />
+      {/* One quiet uplight per zone so the monoliths sit in their own pool */}
+      {Object.values(STATIONS).map((station, index) => (
+        <pointLight
+          key={index}
+          position={[station.x, 4.2, station.z]}
+          intensity={9}
+          distance={16}
+          decay={1.8}
+          color="#d8c7a2"
+        />
+      ))}
     </>
   );
 };

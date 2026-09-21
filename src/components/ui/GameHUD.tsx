@@ -4,32 +4,62 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useGameStore } from '../../stores/gameStore';
 import { useMobileDetection } from '../../hooks/useMobileDetection';
 import { siteConfig, navItems } from '../../content';
+import { arenaContent, getStationContent } from '../../content/arena';
+
+/** Shared surface for the light header pills, matching the rest of the site */
+const pillSurface = {
+  background: 'linear-gradient(180deg, rgba(215, 210, 200, 0.92) 0%, rgba(200, 195, 185, 0.88) 100%)',
+  backdropFilter: 'blur(40px)',
+  WebkitBackdropFilter: 'blur(40px)',
+  border: '1px solid rgba(180, 175, 165, 0.5)',
+  boxShadow:
+    '0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+} as const;
+
+const BackArrow = ({ color = '#555555' }: { color?: string }) => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M19 12H5M12 19l-7-7 7-7" />
+  </svg>
+);
 
 export const GameHUD = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const nearestStation = useGameStore((state) => state.nearestStation);
+  const showStationUI = useGameStore((state) => state.showStationUI);
+  const openStationUI = useGameStore((state) => state.openStationUI);
   const { isMobile } = useMobileDetection();
 
-  const handleNavigation = useCallback((path: string) => {
-    if (path === location.pathname) return;
-    navigate(path);
-  }, [navigate, location.pathname]);
+  const handleNavigation = useCallback(
+    (path: string) => {
+      if (path === location.pathname) return;
+      navigate(path);
+    },
+    [navigate, location.pathname]
+  );
 
-  const handleBack = useCallback(() => {
-    // Navigate back in browser history
-    navigate(-1);
-  }, [navigate]);
+  const handleBack = useCallback(() => navigate(-1), [navigate]);
+
+  const zone = nearestStation ? getStationContent(nearestStation) : null;
+  const showPrompt = Boolean(nearestStation) && !showStationUI;
 
   return (
     <>
-      {/* Header Navigation */}
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
       {isMobile ? (
-        /* Mobile Header - Simplified */
         <motion.header
-          initial={{ y: -40, opacity: 0 }}
+          initial={{ y: -32, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: 'fixed',
             top: 0,
@@ -39,49 +69,33 @@ export const GameHUD = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '12px 16px',
-            zIndex: 100,
+            zIndex: 210,
           }}
         >
-          {/* Back Button */}
           <motion.button
             onClick={handleBack}
             whileTap={{ scale: 0.95 }}
+            aria-label="Go back"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               width: '40px',
               height: '40px',
-              borderRadius: '10px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              cursor: 'pointer',
+              borderRadius: '12px',
+              ...pillSurface,
             }}
           >
-            <svg 
-              width="18" 
-              height="18" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="rgba(255,255,255,0.8)" 
-              strokeWidth="2.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+            <BackArrow />
           </motion.button>
 
-          {/* Logo */}
-          <div 
+          <div
             onClick={() => handleNavigation('/')}
             style={{
               width: '34px',
               height: '34px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)',
+              borderRadius: '10px',
+              background: 'rgba(255,255,255,0.08)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -89,128 +103,75 @@ export const GameHUD = () => {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '12px',
-              fontWeight: 500,
               color: 'rgba(255,255,255,0.85)',
               fontFamily: "'Cormorant Garamond', Georgia, serif",
+              letterSpacing: '0.04em',
               cursor: 'pointer',
             }}
           >
             {siteConfig.identity.initials}
           </div>
 
-          {/* Menu Button */}
-          <motion.button
-            onClick={() => handleNavigation('/')}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              cursor: 'pointer',
-            }}
+          <div
+            className="zone-compass"
+            style={{ padding: '7px 12px', fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}
           >
-            <svg 
-              width="18" 
-              height="18" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="rgba(255,255,255,0.8)" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-          </motion.button>
+            {zone ? zone.name : 'Arena'}
+          </div>
         </motion.header>
       ) : (
-        /* Desktop Header */
         <motion.header
-          initial={{ y: -40, opacity: 0 }}
+          initial={{ y: -32, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.25, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '24px 40px',
-            zIndex: 100,
+            padding: '22px 28px',
+            zIndex: 210,
           }}
         >
-          {/* Left - Back Button */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
-          >
-            {/* Back Button */}
+          {/* Left — back and brand mark */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <motion.button
               onClick={handleBack}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 16px',
+                padding: '9px 16px',
                 borderRadius: '100px',
-                background: 'linear-gradient(180deg, rgba(215, 210, 200, 0.92) 0%, rgba(200, 195, 185, 0.88) 100%)',
-                backdropFilter: 'blur(40px)',
-                WebkitBackdropFilter: 'blur(40px)',
-                border: '1px solid rgba(180, 175, 165, 0.5)',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                ...pillSurface,
               }}
             >
-              <svg 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#555555" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
+              <BackArrow />
+              <span
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#4a4a4a',
+                  letterSpacing: '-0.01em',
+                }}
               >
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
-              <span style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-                color: '#555555',
-                letterSpacing: '-0.01em',
-              }}>
                 Back
               </span>
             </motion.button>
 
-            {/* Logo / Brand Mark - Initials */}
-            <div 
+            <motion.div
               onClick={() => handleNavigation('/')}
+              whileHover={{ y: -1 }}
               style={{
                 width: '38px',
                 height: '38px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)',
+                borderRadius: '12px',
+                background: 'rgba(255,255,255,0.07)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255,255,255,0.1)',
@@ -218,31 +179,24 @@ export const GameHUD = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '14px',
-                fontWeight: 500,
                 color: 'rgba(255,255,255,0.85)',
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                letterSpacing: '0.03em',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
               }}
             >
               {siteConfig.identity.initials}
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
-          {/* Center - Navigation Pills */}
+          {/* Centre — primary navigation */}
           <nav
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0',
               padding: '5px 6px',
-              background: 'linear-gradient(180deg, rgba(215, 210, 200, 0.92) 0%, rgba(200, 195, 185, 0.88) 100%)',
-              backdropFilter: 'blur(40px)',
-              WebkitBackdropFilter: 'blur(40px)',
               borderRadius: '100px',
-              border: '1px solid rgba(180, 175, 165, 0.5)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+              ...pillSurface,
             }}
           >
             {navItems.map((item, index) => {
@@ -250,108 +204,132 @@ export const GameHUD = () => {
               return (
                 <motion.button
                   key={item.id}
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                  transition={{ delay: 0.4 + index * 0.06, duration: 0.45 }}
                   onClick={() => handleNavigation(item.path)}
-                  whileHover={{ 
-                    backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)',
+                  whileHover={{
+                    backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)',
                   }}
                   whileTap={{ scale: 0.97 }}
                   style={{
                     position: 'relative',
-                    padding: '8px 20px',
+                    padding: '8px 19px',
                     borderRadius: '100px',
                     fontSize: '13px',
                     fontWeight: isActive ? 500 : 400,
-                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-                    color: isActive ? '#1a1a1a' : '#555555',
+                    color: isActive ? '#1a1a1a' : '#565656',
                     background: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
-                    boxShadow: isActive ? '0 2px 6px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                    boxShadow: isActive ? '0 2px 6px rgba(0, 0, 0, 0.1)' : 'none',
+                    transition: 'color 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                     letterSpacing: '-0.01em',
-                    cursor: 'pointer',
-                    border: 'none',
                   }}
                 >
                   {item.label}
-                  {isActive && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                      style={{
-                        position: 'absolute',
-                        bottom: '6px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: '3px',
-                        height: '3px',
-                        borderRadius: '50%',
-                        background: '#a89050',
-                      }}
-                    />
-                  )}
                 </motion.button>
               );
             })}
           </nav>
 
-          {/* Right - Spacer to balance layout */}
-          <div style={{ width: '120px' }} />
+          {/* Right — where you are in the arena */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.55, duration: 0.6 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '9px',
+                padding: '9px 16px',
+                borderRadius: '100px',
+                ...pillSurface,
+              }}
+            >
+              <motion.span
+                animate={
+                  zone
+                    ? { scale: [1, 1.25, 1], opacity: [0.75, 1, 0.75] }
+                    : { scale: 1, opacity: 0.5 }
+                }
+                transition={{ duration: 2.2, repeat: zone ? Infinity : 0, ease: 'easeInOut' }}
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: zone ? '#a8904f' : '#8c8b86',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  color: '#4a4a4a',
+                  letterSpacing: '-0.005em',
+                }}
+              >
+                {zone ? zone.name : 'Roaming'}
+              </span>
+            </motion.div>
+          </div>
         </motion.header>
       )}
 
-      {/* Bottom Center - Station Indicator */}
-      <AnimatePresence>
-        {nearestStation && (
+      {/* ── Interaction prompt ──────────────────────────────────────────────── */}
+      <AnimatePresence mode="wait">
+        {showPrompt && zone && (
+          /* The animated element is the wrapper, not the button: framer-motion
+             writes its own `transform`, so centring is done with flex and the
+             button's hover state is left to CSS. */
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.25 }}
+            key={zone.id}
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: 'fixed',
-              bottom: isMobile ? '200px' : 'var(--space-2xl)',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 100,
+              bottom: isMobile ? '190px' : '40px',
+              left: 0,
+              right: 0,
+              display: 'flex',
+              justifyContent: 'center',
+              zIndex: 110,
+              pointerEvents: 'none',
             }}
           >
-            <div
-              className="glass-card"
-              style={{
-                padding: isMobile ? '6px 12px' : 'var(--space-sm) var(--space-lg)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: isMobile ? '8px' : 'var(--space-md)',
-              }}
-            >
-              <div style={{
-                width: isMobile ? '6px' : '8px',
-                height: isMobile ? '6px' : '8px',
-                borderRadius: '50%',
-                background: 'var(--color-accent)',
-                animation: 'pulse 2s ease-in-out infinite',
-              }} />
-              <span style={{
-                fontSize: isMobile ? '11px' : '13px',
-                fontWeight: 500,
-                color: 'var(--color-text-primary)',
-              }}>
-                {nearestStation === 'work' && 'Work Experience'}
-                {nearestStation === 'projects' && 'Projects'}
-                {nearestStation === 'contact' && 'Contact'}
+          <button
+            className="zone-prompt"
+            onClick={openStationUI}
+            style={{ pointerEvents: 'auto' }}
+          >
+            <span style={{ textAlign: 'left' }}>
+              <span
+                style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: 'rgba(255, 255, 255, 0.95)',
+                  letterSpacing: '-0.005em',
+                }}
+              >
+                {zone.name}
               </span>
-              {!isMobile && (
-                <span style={{
+              <span
+                style={{
+                  display: 'block',
+                  marginTop: '2px',
                   fontSize: '11px',
-                  color: 'var(--color-text-muted)',
-                }}>
-                  — Viewing
-                </span>
-              )}
-            </div>
+                  color: 'rgba(255, 255, 255, 0.42)',
+                }}
+              >
+                {zone.description}
+              </span>
+            </span>
+            <span className="zone-prompt__key">
+              {isMobile ? arenaContent.interactPromptTouch : `E · ${arenaContent.interactPrompt}`}
+            </span>
+          </button>
           </motion.div>
         )}
       </AnimatePresence>

@@ -18,6 +18,7 @@ const movementKeys: ControlKey[] = [
 
 const actionKeys: ControlKey[] = [
   { key: 'Shift', label: '⇧', action: 'Sprint', keyCode: 'shift' },
+  { key: 'E', label: 'E', action: 'Open zone', keyCode: 'e' },
 ];
 
 // Memoized key button to prevent unnecessary re-renders
@@ -65,14 +66,14 @@ const KeyButton = memo(({
         overflow: 'hidden',
         touchAction: 'none',
         transform: isActive ? 'scale(0.92)' : 'scale(1)',
-        backgroundColor: isActive 
-          ? 'rgba(59, 130, 246, 0.4)' 
-          : 'rgba(255, 255, 255, 0.06)',
-        borderColor: isActive 
-          ? 'rgba(59, 130, 246, 0.6)' 
-          : 'rgba(255, 255, 255, 0.1)',
-        boxShadow: isActive 
-          ? '0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1)' 
+        backgroundColor: isActive
+          ? 'rgba(201, 169, 98, 0.22)'
+          : 'rgba(255, 255, 255, 0.045)',
+        borderColor: isActive
+          ? 'rgba(201, 169, 98, 0.45)'
+          : 'rgba(255, 255, 255, 0.09)',
+        boxShadow: isActive
+          ? 'inset 0 0 18px rgba(201, 169, 98, 0.12)'
           : '0 2px 8px rgba(0, 0, 0, 0.2)',
         transition: 'all 0.08s ease-out',
       }}
@@ -82,7 +83,7 @@ const KeyButton = memo(({
         style={{
           position: 'absolute',
           inset: '-50%',
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(201, 169, 98, 0.35) 0%, transparent 60%)',
           pointerEvents: 'none',
           opacity: isActive ? 1 : 0,
           transform: isActive ? 'scale(1)' : 'scale(0.5)',
@@ -94,11 +95,11 @@ const KeyButton = memo(({
       <span style={{
         fontSize: size === 'wide' ? '14px' : '13px',
         fontWeight: 600,
-        color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.7)',
+        color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.62)',
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
         position: 'relative',
         zIndex: 1,
-        textShadow: isActive ? '0 0 10px rgba(255, 255, 255, 0.5)' : 'none',
+        textShadow: 'none',
         transition: 'all 0.08s ease-out',
       }}>
         {control.label}
@@ -189,12 +190,12 @@ export const ControlsPanel = () => {
           {/* Main container */}
           <div
             style={{
-              background: 'linear-gradient(145deg, rgba(15, 15, 20, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              background: 'linear-gradient(180deg, rgba(22, 23, 27, 0.78) 0%, rgba(12, 13, 15, 0.86) 100%)',
+              backdropFilter: 'blur(32px) saturate(150%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(150%)',
               borderRadius: '16px',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03) inset',
+              boxShadow: '0 24px 48px -18px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
               padding: '16px',
               overflow: 'hidden',
             }}
@@ -219,17 +220,17 @@ export const ControlsPanel = () => {
                     width: '6px',
                     height: '6px',
                     borderRadius: '50%',
-                    background: '#3b82f6',
-                    boxShadow: '0 0 8px rgba(59, 130, 246, 0.6)',
+                    background: 'var(--color-accent)',
+                    boxShadow: '0 0 8px rgba(201, 169, 98, 0.5)',
                     animation: 'pulse-glow 2s ease-in-out infinite',
                   }}
                 />
                 <span style={{
                   fontSize: '11px',
                   fontWeight: 600,
-                  letterSpacing: '1.5px',
+                  letterSpacing: '0.18em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'rgba(255, 255, 255, 0.45)',
                 }}>
                   Controls
                 </span>

@@ -26,7 +26,6 @@ interface GameState {
   nearestStation: StationType | null;
   showStationUI: boolean;
   isUIOpen: boolean;
-  manuallyClosedStation: StationType | null;
 
   // Controls panel
   showControlsPanel: boolean;
@@ -44,7 +43,7 @@ interface GameState {
   setNearestStation: (station: StationType | null) => void;
   setShowStationUI: (show: boolean) => void;
   setIsUIOpen: (open: boolean) => void;
-  setManuallyClosedStation: (station: StationType | null) => void;
+  openStationUI: () => void;
   closeStationUI: () => void;
   toggleControlsPanel: () => void;
   toggleMinimap: () => void;
@@ -77,7 +76,6 @@ const initialState = {
   nearestStation: null,
   showStationUI: false,
   isUIOpen: false,
-  manuallyClosedStation: null,
   showControlsPanel: true,
   showMinimap: true,
   showObjectives: true,
@@ -111,13 +109,14 @@ export const useGameStore = create<GameState>((set) => ({
 
   setIsUIOpen: (open) => set({ isUIOpen: open }),
 
-  setManuallyClosedStation: (station) => set({ manuallyClosedStation: station }),
+  openStationUI: () =>
+    set((state) =>
+      state.nearestStation
+        ? { showStationUI: true, isUIOpen: true }
+        : state
+    ),
 
-  closeStationUI: () => set((state) => ({ 
-    showStationUI: false, 
-    isUIOpen: false,
-    manuallyClosedStation: state.nearestStation,
-  })),
+  closeStationUI: () => set({ showStationUI: false, isUIOpen: false }),
 
   toggleControlsPanel: () =>
     set((state) => ({ showControlsPanel: !state.showControlsPanel })),

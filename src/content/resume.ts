@@ -7,18 +7,34 @@
  */
 
 import { siteConfig } from './config';
+import { workExperienceData } from './stations';
 
 /** Job/work experience entry */
 export interface JobEntry {
   /** Company name with optional department */
   company: string;
-  /** Employment period (e.g., "02/2025 – Present") */
+  /** Employment period (e.g., "01/2026 – Present") */
   period: string;
   /** Job title/role */
   role: string;
+  /** City / work arrangement (e.g., "Remote", "Boston, MA") */
+  location: string;
   /** List of responsibilities and achievements */
   points: string[];
 }
+
+/**
+ * The English work history is derived from the arena station data so the
+ * Resume page and the 3D arena can never drift apart.
+ * Edit the entries in src/content/stations.ts to change both at once.
+ */
+const jobsFromStations: JobEntry[] = workExperienceData.map((job) => ({
+  company: job.company,
+  period: job.period,
+  role: job.role,
+  location: job.location,
+  points: job.points,
+}));
 
 /** Education entry */
 export interface EducationEntry {
@@ -101,38 +117,7 @@ export const resumeContentEn: ResumeContent = {
   },
   workExperience: {
     title: 'Work Experience',
-    jobs: [
-      {
-        company: 'TechServices | University of Massachusetts Lowell',
-        period: '02/2025 – Present',
-        role: 'Student Support Analyst',
-        points: [
-          'Provide front-line IT support for TechServices, assisting more than 18,000 students and 1,100 faculty and staff while resolving 30+ account and login issues weekly.',
-          'Collaborate with network, system security, and infrastructure engineers to troubleshoot complex hardware, software, and network issues.',
-          'Configure Wi-Fi and device connectivity for 100+ users, ensuring secure and reliable access to campus systems.',
-          'Re-image and deploy 50+ desktops across departments, optimizing system performance and usability.',
-        ],
-      },
-      {
-        company: 'TASC | Bunker Hill Community College',
-        period: '02/2023 – 12/2024',
-        role: 'Computer Science Tutor',
-        points: [
-          'Improved coding efficiency for 60+ students by over 50% through structured debugging and problem-solving support.',
-          'Designed and delivered tailored lesson plans for 50+ students, increasing performance by an average of 25%.',
-          'Mentored software development principles, leading to 10 students completing projects with improved code quality.',
-        ],
-      },
-      {
-        company: "Mayor's Office of Housing, City of Boston",
-        period: '06/2023 – 08/2023',
-        role: 'IT Technical Support Intern',
-        points: [
-          'Replaced and upgraded 50+ legacy hardware systems, improving infrastructure performance and reliability.',
-          'Cleaned and maintained Salesforce data by removing 400+ outdated records, ensuring accurate and up-to-date organizational data.',
-        ],
-      },
-    ],
+    jobs: jobsFromStations,
   },
   education: {
     title: 'Education',
@@ -191,33 +176,58 @@ export const resumeContentSq: ResumeContent = {
     title: 'Përvoja e Punës',
     jobs: [
       {
-        company: 'TechServices | Universiteti i Massachusetts Lowell',
-        period: '02/2025 – Aktualisht',
-        role: 'Analist Mbështetës për Studentët',
+        company: 'Spectra',
+        period: '01/2026 – Aktualisht',
+        role: 'Inxhinier Softuerësh',
+        location: 'Në distancë',
         points: [
-          'Ofroj mbështetje IT të linjës së parë për TechServices, duke ndihmuar më shumë se 18,000 studentë dhe 1,100 staf akademik dhe administrativ ndërsa zgjidh 30+ probleme llogarie dhe hyrjeje çdo javë.',
-          'Bashkëpunoj me inxhinierë të rrjetit, sigurisë së sistemit dhe infrastrukturës për të zgjidhur probleme komplekse harduerësh, softuerësh dhe rrjeti.',
-          'Konfiguroj Wi-Fi dhe lidhjen e pajisjeve për 100+ përdorues, duke siguruar qasje të sigurt dhe të besueshme në sistemet e kampusit.',
-          'Ri-imazhoj dhe shpërndaj 50+ desktop në departamente, duke optimizuar performancën dhe përdorshmërinë e sistemit.',
+          'Realizova aplikacione full-stack në prodhim me React, TypeScript, Next.js dhe Three.js për klientë në fintech dhe pasuri të paluajtshme.',
+          'Zhvillova skripte automatizimi duke përdorur Claude, Cursor dhe ChatGPT; integrova lidhës MCP dhe shtojca IDE.',
+          'Menaxhova depot GitHub, degëzimet, pull request-et dhe rishikimet e kodit; koordinova rrjedhat e zhvillimit dhe dorëzimin përmes Slack.',
         ],
       },
       {
-        company: 'TASC | Kolegji Komunitar Bunker Hill',
+        company: 'Trinity Life Sciences',
+        period: '06/2026 – 08/2026',
+        role: 'Praktikant i Teknologjisë së Informacionit',
+        location: 'Waltham, MA',
+        points: [
+          'Zgjidha 40+ tiketa ServiceNow të nivelit 2 që përfshinin harduer, softuer dhe RBAC në Microsoft 365, GitHub, Copilot dhe Perplexity.',
+          'Vendosa 30+ pajisje Windows të lidhura me Entra ID përmes Autopilot/Intune me validim të BIOS-it dhe pajtueshmërisë.',
+          'Administrova IAM në Microsoft 365 Admin Center dhe Entra ID; mbështeta grupe dinamike PowerShell dhe hartova një propozim zero-touch Workday → Entra ID → Intune.',
+        ],
+      },
+      {
+        company: 'TechServices – Universiteti i Massachusetts Lowell',
+        period: '02/2025 – 05/2026',
+        role: 'Analist Mbështetës për Studentët',
+        location: 'Lowell, MA',
+        points: [
+          'Ofroj mbështetje për 18,000+ studentë dhe 1,100+ staf akademik e administrativ, duke zgjidhur probleme llogarie, harduerësh dhe softuerësh.',
+          'Bashkëpunoj me inxhinierë rrjeti dhe sigurie për të zgjidhur probleme infrastrukture dhe për të menaxhuar aksesin Wi-Fi për 100+ përdorues.',
+          'Ri-imazhoj dhe shpërndaj 50+ desktop në departamente duke përdorur konfigurime të standardizuara.',
+        ],
+      },
+      {
+        company: 'TASC – Kolegji Komunitar Bunker Hill',
         period: '02/2023 – 12/2024',
         role: 'Tutor i Shkencave Kompjuterike',
+        location: 'Boston, MA',
         points: [
-          'Përmirësova efikasitetin e kodimit për 60+ studentë me më shumë se 50% përmes mbështetjes së strukturuar të debugimit dhe zgjidhjes së problemeve.',
-          'Dizajnova dhe ofrova plane mësimore të personalizuara për 50+ studentë, duke rritur performancën mesatarisht me 25%.',
-          'Mentorova parimet e zhvillimit të softuerit, duke çuar në 10 studentë që përfunduan projekte me cilësi të përmirësuar kodi.',
+          'Tutorova 60+ studentë në Java, C++ dhe Strukturat e të Dhënave përmes debugimit dhe forcimit të koncepteve.',
+          'Mbështeta 100+ projekte të përfunduara me sukses duke udhëzuar studentët.',
+          'Zhvillova materiale plotësuese dhe ushtrime praktike për sfidat më të zakonshme të programimit.',
         ],
       },
       {
         company: 'Zyra e Kryetarit të Bashkisë për Strehimin, Qyteti i Bostonit',
         period: '06/2023 – 08/2023',
         role: 'Praktikant i Mbështetjes Teknike IT',
+        location: 'Boston, MA',
         points: [
-          'Zëvendësova dhe përmirësova 50+ sisteme harduerësh të vjetruara, duke përmirësuar performancën dhe besueshmërinë e infrastrukturës.',
-          'Pastrova dhe mirëmbajta të dhënat e Salesforce duke hequr 400+ regjistrime të vjetruara, duke siguruar të dhëna organizative të sakta dhe të përditësuara.',
+          'Vendosa 50+ stacione pune, duke zëvendësuar desktopët e vjetër me laptopë, monitorë dhe dock-e mbi instalime të freskëta Windows.',
+          'Pastrova bazën e të dhënave duke identifikuar dhe hequr 400+ regjistrime të vjetruara për të përmirësuar performancën e sistemit.',
+          'Ofrova mbështetje për përdoruesit në Windows, macOS, pajisje mobile dhe softuer produktiviteti në të gjithë zyrën.',
         ],
       },
     ],

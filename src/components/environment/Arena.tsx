@@ -1,19 +1,19 @@
 import { Ground } from './Ground';
-import { WorkStation } from './WorkStation';
-import { ProjectsStation } from './ProjectsStation';
-import { ContactStation } from './ContactStation';
+import { StationZone } from './StationZone';
 import { Lighting } from './Lighting';
+import { Atmosphere } from './Atmosphere';
 
 export const Arena = () => {
   return (
     <>
       <Lighting />
       <Ground />
-      
-      {/* Interactive stations */}
-      <WorkStation />
-      <ProjectsStation />
-      <ContactStation />
+      <Atmosphere />
+
+      {/* Interactive zones */}
+      <StationZone type="work" />
+      <StationZone type="projects" />
+      <StationZone type="contact" />
     </>
   );
 };

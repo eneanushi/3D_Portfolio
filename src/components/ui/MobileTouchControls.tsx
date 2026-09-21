@@ -196,11 +196,11 @@ export const MobileTouchControls = () => {
             height: '50px',
             borderRadius: '50%',
             background: joystickActive 
-              ? 'linear-gradient(145deg, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.5) 100%)'
+              ? 'linear-gradient(145deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.3) 100%)'
               : 'linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%)',
-            border: `2px solid ${joystickActive ? 'rgba(59, 130, 246, 0.8)' : 'rgba(255, 255, 255, 0.2)'}`,
+            border: `1px solid ${joystickActive ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.18)'}`,
             boxShadow: joystickActive 
-              ? '0 0 20px rgba(59, 130, 246, 0.5)' 
+              ? '0 4px 18px rgba(0, 0, 0, 0.45)' 
               : '0 2px 10px rgba(0, 0, 0, 0.3)',
           }}
         />
@@ -233,7 +233,7 @@ export const MobileTouchControls = () => {
         animate={{
           scale: isRunning ? 0.95 : 1,
           backgroundColor: isRunning 
-            ? 'rgba(59, 130, 246, 0.5)' 
+            ? 'rgba(201, 169, 98, 0.32)' 
             : 'rgba(255, 255, 255, 0.08)',
         }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -241,7 +241,7 @@ export const MobileTouchControls = () => {
           width: '80px',
           height: '80px',
           borderRadius: '50%',
-          border: `2px solid ${isRunning ? 'rgba(59, 130, 246, 0.7)' : 'rgba(255, 255, 255, 0.15)'}`,
+          border: `1px solid ${isRunning ? 'rgba(201, 169, 98, 0.5)' : 'rgba(255, 255, 255, 0.14)'}`,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -251,7 +251,7 @@ export const MobileTouchControls = () => {
           touchAction: 'none',
           cursor: 'pointer',
           boxShadow: isRunning 
-            ? '0 0 25px rgba(59, 130, 246, 0.4)' 
+            ? '0 8px 26px rgba(0, 0, 0, 0.45)' 
             : '0 4px 20px rgba(0, 0, 0, 0.3)',
         }}
       >

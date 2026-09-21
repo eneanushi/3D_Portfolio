@@ -1,18 +1,22 @@
 /**
  * Arena Page Content Configuration
- * 
+ *
  * This file contains content for the interactive arena/game environment.
- * Edit this file to customize station content, controls, and UI text.
+ * Edit this file to customize zone labels, controls, and UI text.
  */
 
-/** Station information displayed in the arena */
+import type { StationType } from '../types/station.types';
+
+/** A zone the player can walk into */
 export interface StationContent {
   /** Station identifier */
-  id: string;
-  /** Station display name */
+  id: StationType;
+  /** Short label used on the 3D marker and in the HUD */
   name: string;
-  /** Station description */
+  /** One-line description shown in the interaction prompt */
   description: string;
+  /** Two-digit index rendered on the 3D marker */
+  index: string;
 }
 
 /** Arena UI text content */
@@ -23,40 +27,53 @@ export interface ArenaContent {
   loadingText: string;
   /** Landscape orientation prompt */
   landscapePrompt: string;
-  /** Station proximity message template */
-  stationProximityMessage: string;
+  /** Prompt shown when standing inside a zone (desktop) */
+  interactPrompt: string;
+  /** Prompt shown when standing inside a zone (touch) */
+  interactPromptTouch: string;
+  /** Hint shown while roaming the arena */
+  roamHint: string;
 }
 
 /**
  * Arena page content configuration
  */
 export const arenaContent: ArenaContent = {
-  title: '3D Arena',
-  loadingText: 'Loading Arena...',
+  title: 'Arena',
+  loadingText: 'Preparing the arena',
   landscapePrompt: 'Please rotate your device to landscape mode for the best experience.',
-  stationProximityMessage: 'Press E to interact with',
+  interactPrompt: 'Open',
+  interactPromptTouch: 'Tap to open',
+  roamHint: 'Walk into a zone to open it',
 };
 
 /**
- * Station content for the arena
+ * Zone content for the arena
  */
 export const stationContents: StationContent[] = [
   {
     id: 'work',
-    name: 'Work Experience',
-    description: 'View professional experience and career history.',
+    name: 'Experience',
+    description: 'Roles, timeline and what I shipped',
+    index: '01',
   },
   {
     id: 'projects',
-    name: 'Projects',
-    description: 'Explore featured projects and technical work.',
+    name: 'Work',
+    description: 'Case studies and live builds',
+    index: '02',
   },
   {
     id: 'contact',
     name: 'Contact',
-    description: 'Get in touch and connect.',
+    description: 'Email and social links',
+    index: '03',
   },
 ];
+
+/** Look up a zone by its station id */
+export const getStationContent = (id: StationType): StationContent =>
+  stationContents.find((station) => station.id === id) ?? stationContents[0];
 
 /** Control key mappings */
 export interface ControlMapping {
@@ -74,12 +91,12 @@ export interface ControlMapping {
 export const keyboardControls: ControlMapping[] = [
   { key: 'W', label: 'W', action: 'Walk forward' },
   { key: 'S', label: 'S', action: 'Walk backward' },
-  { key: 'A', label: 'A', action: 'Strafe left' },
-  { key: 'D', label: 'D', action: 'Strafe right' },
+  { key: 'A', label: 'A', action: 'Turn left' },
+  { key: 'D', label: 'D', action: 'Turn right' },
   { key: 'Shift', label: 'Shift', action: 'Hold to run' },
-  { key: 'I', label: 'I', action: 'Dance' },
+  { key: 'E', label: 'E', action: 'Open a zone' },
   { key: 'H', label: 'H', action: 'Toggle controls' },
-  { key: 'Escape', label: 'ESC', action: 'Close UI' },
+  { key: 'Escape', label: 'ESC', action: 'Close panel' },
 ];
 
 /**

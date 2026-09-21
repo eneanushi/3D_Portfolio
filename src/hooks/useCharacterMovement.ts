@@ -1,5 +1,5 @@
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
 import { useGameStore } from '../stores/gameStore';
 import {
   WALK_SPEED,
@@ -8,91 +8,98 @@ import {
   ARENA_BOUND_Z,
   ROTATION_SPEED,
 } from '../utils/constants';
-import { clampPosition } from '../utils/animationHelpers';
+import { clampPosition, resolveMonolithCollision } from '../utils/animationHelpers';
+import { AnimationName } from '../types/character.types';
 
+const TWO_PI = Math.PI * 2;
+
+/**
+ * Drives the character from the keyboard state.
+ *
+ * Everything is read through `getState()` rather than through selectors: the
+ * character's position changes every frame, and subscribing to it here would
+ * re-render the whole controller sixty times a second for no benefit.
+ */
 export const useCharacterMovement = () => {
-  const keys = useGameStore((state) => state.keys);
-  const isUIOpen = useGameStore((state) => state.isUIOpen);
-  const characterPosition = useGameStore((state) => state.characterPosition);
-  const characterRotation = useGameStore((state) => state.characterRotation);
-  const updateCharacterPosition = useGameStore((state) => state.updateCharacterPosition);
-  const updateCharacterRotation = useGameStore((state) => state.updateCharacterRotation);
-  const setCurrentAnimation = useGameStore((state) => state.setCurrentAnimation);
-  const setIsMoving = useGameStore((state) => state.setIsMoving);
+  const lastAnimation = useRef<AnimationName>('Idle');
+  const lastIsMoving = useRef(false);
 
   useFrame((_, delta) => {
-    // Don't process if UI is open
+    const store = useGameStore.getState();
+    const {
+      keys,
+      isUIOpen,
+      characterPosition,
+      characterRotation,
+      updateCharacterPosition,
+      updateCharacterRotation,
+      setCurrentAnimation,
+      setIsMoving,
+    } = store;
+
+    // Reading a zone panel should not also be driving the character
     if (isUIOpen) {
-      setCurrentAnimation('Idle');
-      setIsMoving(false);
+      if (lastAnimation.current !== 'Idle') {
+        setCurrentAnimation('Idle');
+        lastAnimation.current = 'Idle';
+      }
+      if (lastIsMoving.current) {
+        setIsMoving(false);
+        lastIsMoving.current = false;
+      }
       return;
     }
 
-    // Current rotation
+    // A / D turn the character
     let newRotation = characterRotation;
+    if (keys.a) newRotation += ROTATION_SPEED * delta;
+    if (keys.d) newRotation -= ROTATION_SPEED * delta;
 
-    // A/D keys rotate the character
-    if (keys.a) {
-      newRotation += ROTATION_SPEED * delta; // Rotate left (counter-clockwise)
+    if (newRotation !== characterRotation) {
+      newRotation = ((newRotation % TWO_PI) + TWO_PI) % TWO_PI;
+      updateCharacterRotation(newRotation);
     }
-    if (keys.d) {
-      newRotation -= ROTATION_SPEED * delta; // Rotate right (clockwise)
-    }
 
-    // Normalize rotation to 0 to 2PI
-    while (newRotation < 0) newRotation += Math.PI * 2;
-    while (newRotation >= Math.PI * 2) newRotation -= Math.PI * 2;
-
-    updateCharacterRotation(newRotation);
-
-    // Determine animation and speed based on W/S keys
-    let animation: 'Idle' | 'Walking' | 'Running' | 'Dance' = 'Idle';
+    // W / S drive forward and back
+    let animation: AnimationName = 'Idle';
     let speed = 0;
-    let isMoving = false;
 
     if (keys.w) {
-      // W = move forward (in the direction character is facing)
-      isMoving = true;
-      if (keys.shift) {
-        animation = 'Running';
-        speed = RUN_SPEED;
-      } else {
-        animation = 'Walking';
-        speed = WALK_SPEED;
-      }
+      animation = keys.shift ? 'Running' : 'Walking';
+      speed = keys.shift ? RUN_SPEED : WALK_SPEED;
     } else if (keys.s) {
-      // S = move backward (opposite to facing direction)
-      isMoving = true;
       animation = 'Walking';
-      speed = -WALK_SPEED * 0.6; // Slower backward
+      speed = -WALK_SPEED * 0.6; // Slower backwards
     }
 
-    setCurrentAnimation(animation);
-    setIsMoving(isMoving);
+    const isMoving = speed !== 0;
 
-    // Apply movement in the direction the character is facing
-    if (isMoving && speed !== 0) {
-      // Character faces +Z in model space, rotation Y rotates around Y axis
-      // Forward direction is determined by rotation
-      const forward = new THREE.Vector3(
-        Math.sin(newRotation),
-        0,
-        Math.cos(newRotation)
-      );
-
-      const movement = forward.multiplyScalar(speed * delta);
-
-      const newPosition: [number, number, number] = [
-        characterPosition[0] + movement.x,
-        0,
-        characterPosition[2] + movement.z,
-      ];
-
-      // Clamp to arena bounds
-      newPosition[0] = clampPosition(newPosition[0], -ARENA_BOUND_X, ARENA_BOUND_X);
-      newPosition[2] = clampPosition(newPosition[2], -ARENA_BOUND_Z, ARENA_BOUND_Z);
-
-      updateCharacterPosition(newPosition);
+    // Only push state when it actually changes, to avoid needless re-renders
+    if (animation !== lastAnimation.current) {
+      setCurrentAnimation(animation);
+      lastAnimation.current = animation;
     }
+    if (isMoving !== lastIsMoving.current) {
+      setIsMoving(isMoving);
+      lastIsMoving.current = isMoving;
+    }
+
+    if (!isMoving) return;
+
+    const step = speed * delta;
+    let newPosition: [number, number, number] = [
+      characterPosition[0] + Math.sin(newRotation) * step,
+      0,
+      characterPosition[2] + Math.cos(newRotation) * step,
+    ];
+
+    // Keep the character inside the arena walls
+    newPosition[0] = clampPosition(newPosition[0], -ARENA_BOUND_X, ARENA_BOUND_X);
+    newPosition[2] = clampPosition(newPosition[2], -ARENA_BOUND_Z, ARENA_BOUND_Z);
+
+    // Slide around the zone monoliths rather than through them
+    newPosition = resolveMonolithCollision(newPosition);
+
+    updateCharacterPosition(newPosition);
   });
 };

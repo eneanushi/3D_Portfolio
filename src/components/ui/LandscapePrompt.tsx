@@ -77,7 +77,7 @@ export const LandscapePrompt = ({ isVisible }: LandscapePromptProps) => {
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgba(59, 130, 246, 0.8)"
+              stroke="rgba(201, 169, 98, 0.85)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -125,7 +125,7 @@ export const LandscapePrompt = ({ isVisible }: LandscapePromptProps) => {
             style={{
               width: '120px',
               height: '2px',
-              background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(201, 169, 98, 0.6), transparent)',
               marginTop: '40px',
               borderRadius: '1px',
             }}

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { siteConfig } from '../../content';
 
 interface GlobalLoaderProps {
   isLoading: boolean;
@@ -7,14 +8,46 @@ interface GlobalLoaderProps {
   minDuration?: number;
 }
 
-export const GlobalLoader = ({ 
-  isLoading, 
+const EASE = [0.22, 1, 0.36, 1] as const;
+const RAIL_WIDTH = 148;
+
+/** Shorter curtain once the app is warm — see `resolveDuration` below. */
+const RETURN_DURATION = 620;
+
+/**
+ * The first load really is waiting on the bundle and the 3D assets, so it earns
+ * the full curtain. Every route change after that is instant, and holding the
+ * screen for over a second would be pure theatre.
+ */
+let hasBooted = false;
+
+const resolveDuration = (minDuration: number) =>
+  hasBooted ? Math.min(minDuration, RETURN_DURATION) : minDuration;
+
+/** Fast at first, settling as it approaches the end — reads as real work. */
+const easeOutExpo = (t: number): number => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+/**
+ * The full-screen curtain between routes.
+ *
+ * Visually identical to the boot screen in index.html — same monogram, same
+ * rail, same meta row — so the hand-off from "bundle downloading" to "app
+ * running" is seamless, and every route change re-uses the same language.
+ */
+export const GlobalLoader = ({
+  isLoading,
   onComplete,
-  minDuration = 1200 
+  minDuration = 1200,
 }: GlobalLoaderProps) => {
   const [progress, setProgress] = useState(0);
   const [show, setShow] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  // Kept in a ref so the animation effect does not restart if the parent
+  // passes a new function identity on every render.
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     if (isLoading) {
@@ -27,209 +60,159 @@ export const GlobalLoader = ({
   useEffect(() => {
     if (!show) return;
 
-    const startTime = Date.now();
-    let animationFrame: number;
+    const duration = resolveDuration(minDuration);
+    const startTime = performance.now();
+    let animationFrame = 0;
+    let exitTimer = 0;
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const rawProgress = Math.min((elapsed / minDuration) * 100, 100);
-      
-      // Easing function for smooth progress
-      const easedProgress = easeOutExpo(rawProgress / 100) * 100;
-      setProgress(easedProgress);
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      setProgress(easeOutExpo(rawProgress) * 100);
 
-      if (rawProgress < 100) {
+      if (rawProgress < 1) {
         animationFrame = requestAnimationFrame(animate);
       } else {
         setIsComplete(true);
-        setTimeout(() => {
+        hasBooted = true;
+        // A short beat on "Ready" before the curtain lifts
+        exitTimer = window.setTimeout(() => {
           setShow(false);
-          onComplete?.();
-        }, 300);
+          onCompleteRef.current?.();
+        }, 340);
       }
     };
 
     animationFrame = requestAnimationFrame(animate);
 
     return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
+      cancelAnimationFrame(animationFrame);
+      window.clearTimeout(exitTimer);
     };
-  }, [show, minDuration, onComplete]);
-
-  // Easing function
-  const easeOutExpo = (t: number): number => {
-    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-  };
+  }, [show, minDuration]);
 
   return (
     <AnimatePresence>
       {show && (
         <motion.div
+          key="global-loader"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          // The curtain opens outward rather than simply vanishing
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.035 }}
+          transition={{
+            opacity: { duration: 0.42, ease: EASE },
+            scale: { duration: 0.6, ease: EASE },
+          }}
           style={{
             position: 'fixed',
             inset: 0,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             background: '#000000',
             zIndex: 9999,
           }}
         >
-          {/* Subtle grain texture */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            opacity: 0.03,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-            pointerEvents: 'none',
-          }} />
+          {/* Warm pool of light behind the mark */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'radial-gradient(ellipse 50% 40% at 50% 46%, rgba(201, 169, 98, 0.055), transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
 
-          {/* Loader container */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '32px',
-          }}>
-            {/* Circular progress indicator */}
-            <div style={{
+          {/* Grain */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: 0.022,
+              pointerEvents: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            }}
+          />
+
+          {/* Monogram */}
+          <motion.div
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.9, ease: EASE }}
+            style={{
               position: 'relative',
-              width: '80px',
-              height: '80px',
-            }}>
-              {/* Background circle */}
-              <svg
-                width="80"
-                height="80"
-                viewBox="0 0 80 80"
-                style={{
-                  position: 'absolute',
-                  transform: 'rotate(-90deg)',
-                }}
-              >
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="36"
-                  fill="none"
-                  stroke="rgba(255, 255, 255, 0.06)"
-                  strokeWidth="1"
-                />
-              </svg>
+              fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+              fontWeight: 300,
+              fontSize: '54px',
+              lineHeight: 1,
+              letterSpacing: '0.2em',
+              textIndent: '0.2em', // offsets the trailing letter-space
+              color: 'rgba(255, 255, 255, 0.92)',
+            }}
+          >
+            {siteConfig.identity.initials}
+          </motion.div>
 
-              {/* Progress circle */}
-              <svg
-                width="80"
-                height="80"
-                viewBox="0 0 80 80"
-                style={{
-                  position: 'absolute',
-                  transform: 'rotate(-90deg)',
-                }}
-              >
-                <motion.circle
-                  cx="40"
-                  cy="40"
-                  r="36"
-                  fill="none"
-                  stroke="rgba(255, 255, 255, 0.9)"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 36}`}
-                  strokeDashoffset={2 * Math.PI * 36 * (1 - progress / 100)}
-                  style={{
-                    transition: 'stroke-dashoffset 0.1s ease-out',
-                  }}
-                />
-              </svg>
-
-              {/* Inner decorative circle */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.02, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                }}
-              />
-
-              {/* Center dot */}
-              <motion.div
-                animate={{
-                  scale: isComplete ? [1, 1.5, 1] : 1,
-                }}
-                transition={{
-                  duration: 0.3,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  background: isComplete 
-                    ? 'rgba(201, 169, 98, 0.9)' 
-                    : 'rgba(255, 255, 255, 0.8)',
-                }}
-              />
-            </div>
-
-            {/* Progress text */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+          {/* Progress rail */}
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.16, ease: EASE }}
+            style={{
+              position: 'relative',
+              width: `${RAIL_WIDTH}px`,
+              height: '1px',
+              marginTop: '30px',
+              overflow: 'hidden',
+              background: 'rgba(255, 255, 255, 0.09)',
+            }}
+          >
+            <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px',
+                position: 'absolute',
+                inset: 0,
+                transformOrigin: 'left center',
+                transform: `scaleX(${progress / 100})`,
+                background:
+                  'linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.92))',
+              }}
+            />
+          </motion.div>
+
+          {/* Meta row — identical structure to the boot screen's */}
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.26, ease: EASE }}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: `${RAIL_WIDTH}px`,
+              marginTop: '15px',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontSize: '9px',
+              fontWeight: 500,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <span>{isComplete ? 'Ready' : siteConfig.identity.fullName}</span>
+            <span
+              style={{
+                fontVariantNumeric: 'tabular-nums',
+                color: isComplete ? 'rgba(201, 169, 98, 0.9)' : 'rgba(255, 255, 255, 0.3)',
+                transition: 'color 300ms ease',
               }}
             >
-              <span style={{
-                fontSize: '12px',
-                fontWeight: 400,
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: 'rgba(255, 255, 255, 0.4)',
-                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-              }}>
-                {isComplete ? 'Ready' : 'Loading'}
-              </span>
-              
-              <span style={{
-                fontSize: '14px',
-                fontWeight: 300,
-                color: 'rgba(255, 255, 255, 0.7)',
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                letterSpacing: '0.1em',
-              }}>
-                {Math.round(progress)}%
-              </span>
-            </motion.div>
-          </div>
+              {Math.round(progress)}%
+            </span>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
